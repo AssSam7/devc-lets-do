@@ -1,0 +1,22 @@
+/* General Reset */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: $font-body;
+  line-height: 115%;
+  color: $color-primary;
+}
+
+.container {
+  max-width: 120rem;
+  margin: 4rem auto;
+}
