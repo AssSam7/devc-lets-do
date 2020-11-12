@@ -1,42 +1,85 @@
 <template>
   <div class="container">
-    <header>
+    <header class="header">
       <h1>#todo</h1>
+
+      <main class="header__content">
+        <div class="buttons">
+          <div class="all">
+            <button class="btn btn__all" @click="currentToDo = 'All'">
+              All
+            </button>
+            <hr v-if="currentToDo === 'All'" />
+          </div>
+          <div class="active">
+            <button class="btn btn__active" @click="currentToDo = 'Active'">
+              Active
+            </button>
+            <hr v-if="currentToDo === 'Active'" />
+          </div>
+          <div class="completed">
+            <button
+              class="btn btn__completed"
+              @click="currentToDo = 'Completed'"
+            >
+              Completed
+            </button>
+            <hr v-if="currentToDo === 'Completed'" />
+          </div>
+        </div>
+      </main>
     </header>
 
-    <main class="content">
-      <div class="buttons">
-        <div class="all">
-          <button class="btn btn__all">
-            All
-          </button>
-          <hr />
-        </div>
-        <div class="active">
-          <button class="btn btn__active">
-            Active
-          </button>
-          <hr />
-        </div>
-        <div class="completed">
-          <button class="btn btn__completed">
-            Completed
-          </button>
-          <hr />
-        </div>
+    <div class="todo__content">
+      <div class="todo__all" v-if="currentToDo === 'All'">
+        <app-todo-all
+          :todoList="todoList"
+          @completeTodo="completeTodo($event)"
+          @unCompleteTodo="unCompleteTodo($event)"
+        ></app-todo-all>
       </div>
-    </main>
+      <div class="todo__active" v-if="currentToDo === 'Active'">
+        <app-todo-active :todoActive="todoActive"></app-todo-active>
+      </div>
+      <div class="todo__completed" v-if="currentToDo === 'Completed'"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import TodoAll from "./components/TodoAll.vue";
+import TodoActive from "./components/TodoActive.vue";
+
 export default {
   name: "app",
   data() {
-    return {};
+    return {
+      currentToDo: "All",
+      todoList: [
+        { name: "First Todo", completed: false },
+        { name: "Second Todo", completed: false },
+        { name: "Third Todo", completed: true }
+      ]
+    };
   },
   methods: {
-
+    completeTodo(index) {
+      console.log("Completed " + index);
+      this.todoList[index].completed = true;
+    },
+    unCompleteTodo(index) {
+      console.log("Pending " + index);
+      this.todoList[index].completed = false;
+    }
+  },
+  components: {
+    appTodoAll: TodoAll,
+    appTodoActive: TodoActive
+  },
+  computed: {
+    todoActive: function() {
+      return this.todoList.filter(todo => todo.completed);
+    }
   }
 };
 </script>
@@ -54,7 +97,13 @@ h1 {
 main {
   max-width: 70%;
   padding: 6rem 0;
+  padding-bottom: 0;
   margin: auto;
+}
+
+.todo__content {
+  max-width: 70%;
+  margin: 2rem auto;
 }
 
 .buttons {
@@ -65,11 +114,13 @@ main {
 }
 
 .btn {
+  cursor: pointer;
   color: #333333;
   border: 0;
   outline: none;
   background: none;
   padding: 1rem 2rem;
+  padding-bottom: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
